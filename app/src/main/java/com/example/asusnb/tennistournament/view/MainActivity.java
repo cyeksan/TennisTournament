@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         } catch (Exception e) {
 
+            e.printStackTrace();
 
         }
 
@@ -137,34 +138,32 @@ public class MainActivity extends AppCompatActivity {
                 tournamentTypeList.add(mResponseModel.getTournaments().get(i).getType());
             }
 
+            for (int j = 0; j < mResponseModel.getTournaments().size(); j++) {
+
+                if(mResponseModel.getTournaments().get(j).getType().equalsIgnoreCase("elimination")) {
+
+                    playEliminationMatchFirstTour(j);
+
+                    playEliminationMatchOtherTours(8, j);
+
+                    playEliminationMatchOtherTours(4, j);
+
+                    playEliminationMatchOtherTours(2, j);
+                    Log.d("tournamentWinner", "eliminationId: "+ " winner " + winner.getId() + " experience: " + winner.getExperience());
+
+                } else {
+                    playLeagueMatch();
+
+                    Log.d("tournamentWinner", "leagueId: "  + " winner " + winner.getId() + " experience: " + winner.getExperience());
 
 
-        } catch (JsonParseException e) {
-            e.printStackTrace();
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        for (int j = 0; j < mResponseModel.getTournaments().size(); j++) {
 
-            if(mResponseModel.getTournaments().get(j).getType().equalsIgnoreCase("elimination")) {
-
-                playEliminationMatchFirstTour(j);
-
-                playEliminationMatchOtherTours(8, j);
-
-                playEliminationMatchOtherTours(4, j);
-
-                playEliminationMatchOtherTours(2, j);
-                Log.d("tournamentWinner", "eliminationId: "+ " winner " + winner.getId() + " experience: " + winner.getExperience());
-
-            } else {
-                playLeagueMatch();
-
-                Log.d("tournamentWinner", "leagueId: "  + " winner " + winner.getId() + " experience: " + winner.getExperience());
-
-
-            }
-        }
 
     }
 
@@ -267,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
 
             Collections.shuffle(list);
             decideLeagueWinner(i);
-            Log.d("winnerLeague", "---------------");
         }
 
     }
