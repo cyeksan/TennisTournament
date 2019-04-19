@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private List<Player> winnerList = new ArrayList<Player>();
     private List<Tournament> leaugeList = new ArrayList<Tournament>();
     private List<Tournament> eleminationList = new ArrayList<Tournament>();
+    private List<String> tournamentTypeList = new ArrayList<String>();
 
     private HashMap<Integer, Integer> hashMap = new HashMap<>();
 
@@ -132,30 +133,38 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 Log.d("Tournaments", "tournamentId: " + tournamentId + " surface: " + surface + " type: " + type);
+
+                tournamentTypeList.add(mResponseModel.getTournaments().get(i).getType());
             }
 
-            for (int i = 0; i < eleminationList.size(); i++) {
 
-                playEliminationMatchFirstTour(i);
-
-                playEliminationMatchOtherTours(8,i);
-
-                playEliminationMatchOtherTours(4,i);
-
-                playEliminationMatchOtherTours(2,i);
-
-                Log.d("tournamentWinner", "tournamentId: " + leaugeList.get(i) + " winner " + winner.getId());
-
-            }
-
-            playLeagueMatch();
 
         } catch (JsonParseException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        for (int j = 0; j < mResponseModel.getTournaments().size(); j++) {
 
+            if(mResponseModel.getTournaments().get(j).getType().equalsIgnoreCase("elimination")) {
+
+                playEliminationMatchFirstTour(j);
+
+                playEliminationMatchOtherTours(8, j);
+
+                playEliminationMatchOtherTours(4, j);
+
+                playEliminationMatchOtherTours(2, j);
+                Log.d("tournamentWinner", "eliminationId: "+ " winner " + winner.getId() + " experience: " + winner.getExperience());
+
+            } else {
+                playLeagueMatch();
+
+                Log.d("tournamentWinner", "leagueId: "  + " winner " + winner.getId() + " experience: " + winner.getExperience());
+
+
+            }
+        }
 
     }
 
@@ -251,10 +260,8 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
-
         Log.d("hashmapim2", new Gson().toJson(list) );
-        Log.d("hashmapim2",  list.size() +"" );
+        Log.d("hashmapim2",  list.size() + "" );
 
         for(int i = 0; i < leaugeList.size(); i++) {
 
@@ -323,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
                 gainedExperience2 = gainedExperience2 + 2;
             }
 
-            if (eleminationList.get(eleminationId).getSurface().equals("clay")) {
+            if (tournamentTypeList.get(eleminationId).equals("clay")) {
 
                 if (playerPair1.get(i).getSkills().getClay() > playerPair2.get(i).getSkills().getClay()) {
 
@@ -334,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
 
                     gainedExperience2 = gainedExperience2 + 4;
                 }
-            } else if (eleminationList.get(eleminationId).getSurface().equals("grass")) {
+            } else if (tournamentTypeList.get(eleminationId).equals("grass")) {
 
                 if (playerPair1.get(i).getSkills().getClay() > playerPair2.get(i).getSkills().getGrass()) {
 
@@ -521,7 +528,6 @@ public class MainActivity extends AppCompatActivity {
 
 
             winnerList.add(winner);
-            Log.d("winnerLeague", "decideWinner: " + winner.getId());
 
         }
 
