@@ -281,7 +281,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
     private void playEliminationMatchOtherTours(int playerNumber, int eleminationId) {
 
         playerPair1.clear();
@@ -403,13 +402,17 @@ public class MainActivity extends AppCompatActivity {
 
             if (winner == playerPair1.get(i)) {
 
-                totalExperience1 = totalExperience1 + gainedExperience1 + 20;
-                totalExperience2 = totalExperience2 + gainedExperience2 + 10;
+                gainedExperience1 = gainedExperience1 + 20;
+                gainedExperience2 = gainedExperience2 + 10;
+                totalExperience1 = totalExperience1 + gainedExperience1;
+                totalExperience2 = totalExperience2 + gainedExperience2;
                 winner.setExperience(totalExperience1);
             } else if (winner == playerPair2.get(i)) {
 
-                totalExperience2 = totalExperience2 + gainedExperience2 + 20;
-                totalExperience1 = totalExperience1 + gainedExperience1 + 10;
+                gainedExperience1 = gainedExperience1 + 10;
+                gainedExperience2 = gainedExperience2 + 20;
+                totalExperience2 = totalExperience2 + gainedExperience2;
+                totalExperience1 = totalExperience1 + gainedExperience1;
                 winner.setExperience(totalExperience2);
             }
 
@@ -525,17 +528,20 @@ public class MainActivity extends AppCompatActivity {
 
             if (winner == firstList.get(i)) {
 
-                totalExperience1 = totalExperience1 + gainedExperience1 + 10;
-                totalExperience2 = totalExperience2 + gainedExperience2 + 1;
+                gainedExperience1 = gainedExperience1 + 10;
+                gainedExperience2 = gainedExperience2 + 1;
+                totalExperience1 = totalExperience1 + gainedExperience1;
+                totalExperience2 = totalExperience2 + gainedExperience2;
                 winner.setExperience(totalExperience1);
             } else if (winner == secondList.get(i)) {
 
-                totalExperience2 = totalExperience2 + gainedExperience2 + 10;
-                totalExperience1 = totalExperience1 + gainedExperience1 + 1;
+                gainedExperience1 = gainedExperience1 + 1;
+                gainedExperience2 = gainedExperience2 + 10;
+                totalExperience2 = totalExperience2 + gainedExperience2;
+                totalExperience1 = totalExperience1 + gainedExperience1;
                 winner.setExperience(totalExperience2);
 
             }
-
 
             winnerList.add(winner);
             updateExperience(winner.getId(), winner.getExperience());
