@@ -510,12 +510,12 @@ public class MainActivity extends AppCompatActivity {
 
             if (winner == firstList.get(i)) {
 
-                totalExperience1 = totalExperience1 + gainedExperience1 + 20;
-                totalExperience2 = totalExperience2 + gainedExperience2 + 10;
+                totalExperience1 = totalExperience1 + gainedExperience1 + 10;
+                totalExperience2 = totalExperience2 + gainedExperience2 + 1;
             } else if (winner == secondList.get(i)) {
 
-                totalExperience2 = totalExperience2 + gainedExperience2 + 20;
-                totalExperience1 = totalExperience1 + gainedExperience1 + 10;
+                totalExperience2 = totalExperience2 + gainedExperience2 + 10;
+                totalExperience1 = totalExperience1 + gainedExperience1 + 1;
             }
 
 
