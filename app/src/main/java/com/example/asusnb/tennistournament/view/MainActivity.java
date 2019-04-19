@@ -5,19 +5,23 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.asusnb.tennistournament.R;
+import com.example.asusnb.tennistournament.model.ListModel;
 import com.example.asusnb.tennistournament.model.Player;
 import com.example.asusnb.tennistournament.model.ResponseModel;
 import com.example.asusnb.tennistournament.model.Skills;
+import com.example.asusnb.tennistournament.model.Tournament;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -36,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private List<Player> playerList = new ArrayList<>();
     private List<Player> tempList = new ArrayList<>();
     private List<String> surfaceList = new ArrayList<>();
-    private List<String> eliminationTypeList = new ArrayList<>();
     private Integer experience = null;
     private Skills skills = new Skills();
     private Integer claySkill = null;
@@ -47,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Player pA;
     private Player pB;
-    private Player pLeagueA;
-    private Player pLeagueB;
+    List<ListModel> list = new ArrayList<>();
 
     private Integer totalExperience1 = null;
     private Integer totalExperience2 = null;
@@ -56,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
     private List<Player> playerPair1 = new ArrayList<Player>();
     private List<Player> playerPair2 = new ArrayList<Player>();
     private List<Player> winnerList = new ArrayList<Player>();
-    private List<Integer> tournamentIdList = new ArrayList<Integer>();
+    private List<Tournament> leaugeList = new ArrayList<Tournament>();
+    private List<Tournament> eleminationList = new ArrayList<Tournament>();
 
     private HashMap<Integer, Integer> hashMap = new HashMap<>();
-    private List<HashMap<Integer, Integer>> leagueList = new ArrayList<HashMap<Integer, Integer>>();
 
     private Integer tournamentId = null;
     private String surface = null;
@@ -122,24 +124,27 @@ public class MainActivity extends AppCompatActivity {
 
                 if (type.equals("elimination")) {
 
-                    eliminationTypeList.add(type);
-                    tournamentIdList.add(mResponseModel.getTournaments().get(i).getId());
+                    eleminationList.add(mResponseModel.getTournaments().get(i));
+                } else {
+
+                    leaugeList.add(mResponseModel.getTournaments().get(i));
+
                 }
 
                 Log.d("Tournaments", "tournamentId: " + tournamentId + " surface: " + surface + " type: " + type);
             }
 
-            for (int i = 0; i < eliminationTypeList.size(); i++) {
+            for (int i = 0; i < eleminationList.size(); i++) {
 
-                playEliminationMatchFirstTour();
+                playEliminationMatchFirstTour(i);
 
-                playEliminationMatchOtherTours(8);
+                playEliminationMatchOtherTours(8,i);
 
-                playEliminationMatchOtherTours(4);
+                playEliminationMatchOtherTours(4,i);
 
-                playEliminationMatchOtherTours(2);
+                playEliminationMatchOtherTours(2,i);
 
-                Log.d("tournamentWinner", "tournamentId: " + tournamentIdList.get(i) + " winner " + winner.getId());
+                Log.d("tournamentWinner", "tournamentId: " + leaugeList.get(i) + " winner " + winner.getId());
 
             }
 
@@ -154,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void playEliminationMatchFirstTour() {
+    private void playEliminationMatchFirstTour(int eleminationId) {
 
         if (playerList.size() == 0) {
             try {
@@ -196,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        decideWinner();
+        decideEliminationWinner(eleminationId);
     }
 
     private void playLeagueMatch() {
@@ -217,29 +222,51 @@ public class MainActivity extends AppCompatActivity {
 
             }
         }
-        while (leagueList.size() < 120) {
-        int a = (int) (Math.random() * (playerList.size()));
-        int b = (int) (Math.random() * (playerList.size()));
 
-        if (a != b) {
 
-            pLeagueA = playerList.get(a);
-            pLeagueB = playerList.get(b);
+        int count= 0;
+        while (count < playerList.size()) {
 
-            hashMap.put(pLeagueA.getId(), pLeagueB.getId());
+        int count2 =count;
 
-                leagueList.add(hashMap);
+        hashMap = new HashMap<>();
+        while(count2<16) {
 
-                Log.d("hashmapim", leagueList.toString());
+            if(count != count2 ) {
 
-            playerList.remove(pLeagueA);
-            playerList.remove(pLeagueB);
+                ListModel model = new ListModel();
+
+
+                model.setFirstPlayer(playerList.get(count));
+                model.setSecondPlayer(playerList.get(count2));
+
+                list.add(model);
+                Log.d("hashmapim", "playLeagueMatch: " + "count: " + count + "count2: " + count2);
+
             }
+            count2++;
+
         }
+            count ++;
+
+        }
+
+
+
+        Log.d("hashmapim2", new Gson().toJson(list) );
+        Log.d("hashmapim2",  list.size() +"" );
+
+        for(int i = 0; i < leaugeList.size(); i++) {
+
+            Collections.shuffle(list);
+            decideLeagueWinner(i);
+            Log.d("winnerLeague", "---------------");
+        }
+
     }
 
 
-    private void playEliminationMatchOtherTours(int playerNumber) {
+    private void playEliminationMatchOtherTours(int playerNumber,int eleminationId) {
 
         playerPair1.clear();
         playerPair2.clear();
@@ -259,11 +286,11 @@ public class MainActivity extends AppCompatActivity {
             playerPair2.add(pB);
         }
 
-        decideWinner();
+        decideEliminationWinner(eleminationId);
     }
 
 
-    private void decideWinner() {
+    private void decideEliminationWinner(int eleminationId) {
 
         winnerList.clear();
 
@@ -296,7 +323,7 @@ public class MainActivity extends AppCompatActivity {
                 gainedExperience2 = gainedExperience2 + 2;
             }
 
-            if (surfaceList.get(i).equals("clay")) {
+            if (eleminationList.get(eleminationId).getSurface().equals("clay")) {
 
                 if (playerPair1.get(i).getSkills().getClay() > playerPair2.get(i).getSkills().getClay()) {
 
@@ -307,7 +334,7 @@ public class MainActivity extends AppCompatActivity {
 
                     gainedExperience2 = gainedExperience2 + 4;
                 }
-            } else if (surfaceList.get(i).equals("grass")) {
+            } else if (eleminationList.get(eleminationId).getSurface().equals("grass")) {
 
                 if (playerPair1.get(i).getSkills().getClay() > playerPair2.get(i).getSkills().getGrass()) {
 
@@ -368,20 +395,137 @@ public class MainActivity extends AppCompatActivity {
                 totalExperience1 = totalExperience1 + gainedExperience1 + 10;
             }
 
-           /* if (gainedExperience1 > gainedExperience2) {
 
-                winner = playerPair1.get(i);
-
-            } else {
-
-                winner = playerPair2.get(i);
-
-            }*/
 
             winnerList.add(winner);
             Log.d("winner", "decideWinner: " + winner.getId());
 
         }
+    }
+
+
+   private void decideLeagueWinner(int tournamentId) {
+
+        List<Player> firstList = new ArrayList<>();
+        List<Player> secondList = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); i++) {
+
+            firstList.add(list.get(i).getFirstPlayer());
+            secondList.add(list.get(i).getSecondPlayer());
+
+
+            totalExperience1 = firstList.get(i).getExperience();
+            totalExperience2 = secondList.get(i).getExperience();
+
+            gainedExperience1 = totalExperience1 + 1;
+            gainedExperience2 = totalExperience2 + 1;
+
+            if (totalExperience1 > totalExperience2) {
+
+                gainedExperience1 = gainedExperience1 + 3;
+            }
+
+            if (totalExperience2 > totalExperience1) {
+
+                gainedExperience2 = gainedExperience2 + 3;
+            }
+
+
+            if (firstList.get(i).getHand().equals("left")) {
+
+                gainedExperience1 = gainedExperience1 + 2;
+            }
+
+            if (secondList.get(i).getHand().equals("left")) {
+
+                gainedExperience2 = gainedExperience2 + 2;
+            }
+
+
+
+                if (leaugeList.get(tournamentId).getSurface().equals("clay")) {
+
+                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getClay()) {
+
+                        gainedExperience1 = gainedExperience1 + 4;
+                    }
+
+                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getClay()) {
+
+                        gainedExperience2 = gainedExperience2 + 4;
+                    }
+                } else if (leaugeList.get(tournamentId).getSurface().equals("grass")) {
+
+                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getGrass()) {
+
+                        gainedExperience1 = gainedExperience1 + 4;
+                    }
+
+                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getGrass()) {
+
+                        gainedExperience2 = gainedExperience2 + 4;
+                    }
+
+                } else {
+
+                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getHard()) {
+
+                        gainedExperience1 = gainedExperience1 + 4;
+                    }
+
+                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getHard()) {
+
+                        gainedExperience2 = gainedExperience2 + 4;
+                    }
+                }
+
+
+
+
+            double pr1 = (double) gainedExperience1 / (gainedExperience1 + gainedExperience2);
+            double pr2 = (double) gainedExperience2 / (gainedExperience1 + gainedExperience2);
+
+            double randomNumber = Math.random();
+
+            if (pr1 > pr2) {
+
+                if (pr1 > randomNumber) {
+
+                    winner = firstList.get(i);
+                } else {
+
+                    winner = secondList.get(i);
+                }
+            } else {
+
+                if (pr2 > randomNumber) {
+
+                    winner = secondList.get(i);
+                } else {
+
+                    winner = firstList.get(i);
+                }
+            }
+
+            if (winner == firstList.get(i)) {
+
+                totalExperience1 = totalExperience1 + gainedExperience1 + 20;
+                totalExperience2 = totalExperience2 + gainedExperience2 + 10;
+            } else if (winner == secondList.get(i)) {
+
+                totalExperience2 = totalExperience2 + gainedExperience2 + 20;
+                totalExperience1 = totalExperience1 + gainedExperience1 + 10;
+            }
+
+
+
+            winnerList.add(winner);
+            Log.d("winnerLeague", "decideWinner: " + winner.getId());
+
+        }
+
+        //list.clear();
     }
 
 }
