@@ -111,6 +111,11 @@ public class Player {
         return gainedExperience;
     }
 
+    public void setGainedExperience(Integer gainedExperience) {
+
+        this.gainedExperience = gainedExperience;
+    }
+
     public void addGainedExperience(Integer experience) {
 
         this.gainedExperience += experience;
