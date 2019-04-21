@@ -1,88 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    <TableLayout
-        android:id="@+id/tournamentWinnersTable"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TableRow>
-
-            <TextView
-                android:layout_weight="1"
-                android:padding="2dp"
-                android:text="tournament ID" />
-
-            <TextView
-                android:layout_weight="1"
-
-                android:padding="2dp"
-
-                android:text="tournament type" />
-
-            <TextView
-                android:layout_weight="1"
-
-                android:padding="2dp"
-                android:text="player ID" />
-
-            <TextView
-                android:layout_weight="1"
-
-                android:padding="2dp"
-                android:text="gained experience" />
-
-            <TextView
-                android:layout_weight="1"
-
-                android:padding="2dp"
-                android:text="total experience" />
-
-        </TableRow>
-
-
-    </TableLayout>
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <TableLayout
         android:id="@+id/finalScores"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        style="@style/tableLayoutStyle">
 
         <TableRow>
 
             <TextView
-                android:layout_weight="1"
-                android:padding="2dp"
-                android:text="order" />
+                android:text="@string/order"
+                style="@style/rowTitleStyle"/>
 
             <TextView
-                android:layout_weight="1"
-                android:padding="2dp"
-                android:text="player ID" />
+                android:text="@string/player_id"
+                style="@style/rowTitleStyle"/>
 
             <TextView
-                android:layout_weight="1"
-
-                android:padding="2dp"
-
-                android:text="gained experience" />
+                android:text="@string/gained_experience"
+                style="@style/rowTitleStyle" />
 
             <TextView
-                android:layout_weight="1"
-
-                android:padding="2dp"
-
-                android:text="total experience" />
+                android:text="@string/total_experience"
+                style="@style/rowTitleStyle" />
         </TableRow>
     </TableLayout>
-    </LinearLayout>
 </ScrollView>

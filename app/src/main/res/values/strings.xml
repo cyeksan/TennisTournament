@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">TennisTournament</string>
+    <string name="app_name">Tennis Tournament Simulation</string>
+    <string name="tournament_id">Tournament Id</string>
+    <string name="tournament_type">Tournament Type</string>
+    <string name="player_id">Player Id</string>
+    <string name="gained_experience">Gained Experience</string>
+    <string name="total_experience">Total Experience</string>
+    <string name="order">Order</string>
 </resources>
