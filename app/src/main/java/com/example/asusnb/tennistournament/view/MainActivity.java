@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,11 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonFactory jsonFactory = new JsonFactory();
-        TableLayout table = findViewById(R.id.table);
 
         try (InputStream is = getResources().openRawResource(R.raw.input)) {
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
 
             total = new StringBuilder();
             for (String line; (line = br.readLine()) != null; ) {
@@ -276,40 +276,44 @@ public class MainActivity extends AppCompatActivity {
                 gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 2;
             }
 
-            if (tournamentTypeList.get(eleminationId).equals("clay")) {
+            switch (tournamentTypeList.get(eleminationId)) {
+                case "clay":
 
-                if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getClay()) {
+                    if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getClay()) {
 
-                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
+                    }
 
-                if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getClay()) {
+                    if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getClay()) {
 
-                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
-                }
-            } else if (tournamentTypeList.get(eleminationId).equals("grass")) {
+                        gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
+                    }
+                    break;
+                case "grass":
 
-                if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getGrass()) {
+                    if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getGrass()) {
 
-                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
+                    }
 
-                if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getGrass()) {
+                    if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getGrass()) {
 
-                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
+                    }
 
-            } else {
+                    break;
+                default:
 
-                if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getHard()) {
+                    if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getHard()) {
 
-                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
+                    }
 
-                if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getHard()) {
+                    if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getHard()) {
 
-                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
+                    }
+                    break;
             }
 
 
@@ -408,40 +412,44 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            if (leagueList.get(tournamentId).getSurface().equals("clay")) {
+            switch (leagueList.get(tournamentId).getSurface()) {
+                case "clay":
 
-                if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getClay()) {
+                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getClay()) {
 
-                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
+                    }
 
-                if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getClay()) {
+                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getClay()) {
 
-                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
-                }
-            } else if (leagueList.get(tournamentId).getSurface().equals("grass")) {
+                        gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
+                    }
+                    break;
+                case "grass":
 
-                if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getGrass()) {
+                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getGrass()) {
 
-                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
+                    }
 
-                if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getGrass()) {
+                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getGrass()) {
 
-                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
+                    }
 
-            } else {
+                    break;
+                default:
 
-                if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getHard()) {
+                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getHard()) {
 
-                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
+                    }
 
-                if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getHard()) {
+                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getHard()) {
 
-                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
-                }
+                        gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
+                    }
+                    break;
             }
 
 
