@@ -29,26 +29,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private ObjectMapper objectMapper = null;
-    private JsonFactory jsonFactory = null;
-    private JsonParser jp = null;
     private StringBuilder total;
 
-    private InputModel mInputModel;
-
-    private List<Player> players = null;
-    private Player player = null;
-    private String hand = null;
-    private Integer playerId = null;
     private List<Player> playerList = new ArrayList<>();
-    private List<Player> tempList = new ArrayList<>();
     private List<String> surfaceList = new ArrayList<>();
-    private List<Integer> tournamentIdList = new ArrayList<>();
-    private Integer experience = null;
-    private Skills skills = new Skills();
-    private Integer claySkill = null;
-    private Integer grassSkill = null;
-    private Integer hardSkill = null;
     private Integer gainedExperience1 = null;
     private Integer gainedExperience2 = null;
 
@@ -63,28 +47,21 @@ public class MainActivity extends AppCompatActivity {
     private List<Player> playerPair2 = new ArrayList<Player>();
     private List<Player> winnerList = new ArrayList<Player>();
     private List<Player> loserList = new ArrayList<Player>();
-    private List<Tournament> leaugeList = new ArrayList<Tournament>();
+    private List<Tournament> leagueList = new ArrayList<Tournament>();
     private List<Tournament> eliminationList = new ArrayList<Tournament>();
     private List<String> tournamentTypeList = new ArrayList<String>();
 
-    private HashMap<Integer, Integer> hashMap = new HashMap<>();
-
-    private Integer tournamentId = null;
-    private String surface = null;
-    private String type = null;
-
     private Player winner;
     private Player loser;
-    private TableLayout table;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        objectMapper = new ObjectMapper();
-        jsonFactory = new JsonFactory();
-        table = findViewById(R.id.table);
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonFactory jsonFactory = new JsonFactory();
+        TableLayout table = findViewById(R.id.table);
 
 
 
@@ -107,40 +84,39 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            jp = jsonFactory.createJsonParser(total.toString());
-            mInputModel = objectMapper.readValue(jp, InputModel.class);
+            JsonParser jp = jsonFactory.createJsonParser(total.toString());
+            InputModel mInputModel = objectMapper.readValue(jp, InputModel.class);
 
             for (int i = 0; i < mInputModel.getPlayers().size(); i++) {
 
-                playerId = mInputModel.getPlayers().get(i).getId();
+                Integer playerId = mInputModel.getPlayers().get(i).getId();
 
                 playerList.add(mInputModel.getPlayers().get(i));
-                this.tempList = playerList;
 
-                hand = mInputModel.getPlayers().get(i).getHand();
-                experience = mInputModel.getPlayers().get(i).getExperience();
-                skills = mInputModel.getPlayers().get(i).getSkills();
-                claySkill = skills.getClay();
-                grassSkill = skills.getGrass();
-                hardSkill = skills.getHard();
+                String hand = mInputModel.getPlayers().get(i).getHand();
+                Integer experience = mInputModel.getPlayers().get(i).getExperience();
+                Skills skills = mInputModel.getPlayers().get(i).getSkills();
+                Integer claySkill = skills.getClay();
+                Integer grassSkill = skills.getGrass();
+                Integer hardSkill = skills.getHard();
 
                 Log.d("Players", "playerId: " + playerId + " hand: " + hand + " experience: " + experience + " skill/clay : " + claySkill + " skill/grass: " + grassSkill + " skill/hard: " + hardSkill);
             }
 
             for (int i = 0; i < mInputModel.getTournaments().size(); i++) {
 
-                tournamentId = mInputModel.getTournaments().get(i).getId();
+                Integer tournamentId = mInputModel.getTournaments().get(i).getId();
 
-                surface = mInputModel.getTournaments().get(i).getSurface();
+                String surface = mInputModel.getTournaments().get(i).getSurface();
                 surfaceList.add(mInputModel.getTournaments().get(i).getSurface());
-                type = mInputModel.getTournaments().get(i).getType();
+                String type = mInputModel.getTournaments().get(i).getType();
 
                 if (type.equals("elimination")) {
 
                     eliminationList.add(mInputModel.getTournaments().get(i));
                 } else {
 
-                    leaugeList.add(mInputModel.getTournaments().get(i));
+                    leagueList.add(mInputModel.getTournaments().get(i));
 
                 }
 
@@ -292,7 +268,6 @@ public class MainActivity extends AppCompatActivity {
 
             int count2 = count;
 
-            hashMap = new HashMap<>();
             while (count2 < 16) {
 
                 if (count != count2) {
@@ -317,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d("hashmapim2", new Gson().toJson(list));
         Log.d("hashmapim2", list.size() + "");
 
-        for (int i = 0; i < leaugeList.size(); i++) {
+        for (int i = 0; i < leagueList.size(); i++) {
 
             Collections.shuffle(list);
             decideLeagueWinner(i);
@@ -462,16 +437,16 @@ public class MainActivity extends AppCompatActivity {
 
             if (winner == playerPair1.get(i)) {
 
-             gainedExperience1 = 20;
-             gainedExperience2 = 10;
+                gainedExperience1 = gainedExperience1 + 20;
+                gainedExperience2 = gainedExperience2 + 10;
 
                 winner.addGainedExperience(gainedExperience1);
                 loser.addGainedExperience(gainedExperience2);
 
             } else if (winner == playerPair2.get(i)) {
 
-              gainedExperience1 = 10;
-              gainedExperience2 = 20;
+                gainedExperience1 = gainedExperience1 + 10;
+                gainedExperience2 = gainedExperience2 + 20;
 
                 winner.addGainedExperience(gainedExperience2);
                 loser.addGainedExperience(gainedExperience1);
@@ -479,7 +454,8 @@ public class MainActivity extends AppCompatActivity {
 
 
             winnerList.add(winner);
-            updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
+            //updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
+            //updateExperience(loser.getId(), loser.getExperience(), loser.getGainedExperience());
             Log.d("winner", "decideWinner: " + winner.getId() + "experience" + winner.getExperience());
 
         }
@@ -525,7 +501,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
-            if (leaugeList.get(tournamentId).getSurface().equals("clay")) {
+            if (leagueList.get(tournamentId).getSurface().equals("clay")) {
 
                 if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getClay()) {
 
@@ -536,7 +512,7 @@ public class MainActivity extends AppCompatActivity {
 
                     gainedExperience2 = gainedExperience2 + 4;
                 }
-            } else if (leaugeList.get(tournamentId).getSurface().equals("grass")) {
+            } else if (leagueList.get(tournamentId).getSurface().equals("grass")) {
 
                 if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getGrass()) {
 
@@ -593,16 +569,16 @@ public class MainActivity extends AppCompatActivity {
 
             if (winner == firstList.get(i)) {
 
-               gainedExperience1 = 10;
-               gainedExperience2 = 1;
+                gainedExperience1 = gainedExperience1 + 10;
+                gainedExperience2 = gainedExperience2 + 1;
 
                 winner.addGainedExperience(gainedExperience1);
                 loser.addGainedExperience(gainedExperience2);
 
             } else if (winner == secondList.get(i)) {
 
-               gainedExperience1 = 1;
-               gainedExperience2 = 10;
+                gainedExperience1 = gainedExperience1 + 1;
+                gainedExperience2 = gainedExperience2 + 10;
 
 
                 winner.addGainedExperience(gainedExperience2);
@@ -610,7 +586,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-            updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
+          //  updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
+           // updateExperience(loser.getId(), loser.getExperience(), loser.getGainedExperience());
 
         }
 
@@ -618,5 +595,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-
