@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,23 +32,22 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Player> playerList = new ArrayList<>();
     private List<String> surfaceList = new ArrayList<>();
-    private Integer gainedExperience1 = null;
-    private Integer gainedExperience2 = null;
+    private Integer gainedExperienceOfPlayerOfTeam1 = null;
+    private Integer gainedExperienceOfPlayerOfTeam2 = null;
 
-    private Player pA;
-    private Player pB;
+    private Player playerOfEliminationTeam1;
+    private Player playerOfEliminationTeam2;
     List<ListModel> list = new ArrayList<>();
 
-    private Integer totalExperience1 = null;
-    private Integer totalExperience2 = null;
+    private Integer totalExperienceOfPlayerOfTeam1 = null;
+    private Integer totalExperienceOfPlayerOfTeam2 = null;
 
-    private List<Player> playerPair1 = new ArrayList<Player>();
-    private List<Player> playerPair2 = new ArrayList<Player>();
-    private List<Player> winnerList = new ArrayList<Player>();
-    private List<Player> loserList = new ArrayList<Player>();
-    private List<Tournament> leagueList = new ArrayList<Tournament>();
-    private List<Tournament> eliminationList = new ArrayList<Tournament>();
-    private List<String> tournamentTypeList = new ArrayList<String>();
+    private List<Player> eliminationTeam1 = new ArrayList<>();
+    private List<Player> eliminationTeam2 = new ArrayList<>();
+    private List<Player> winnerList = new ArrayList<>();
+    private List<Tournament> leagueList = new ArrayList<>();
+    private List<Tournament> eliminationList = new ArrayList<>();
+    private List<String> tournamentTypeList = new ArrayList<>();
 
     private Player winner;
     private Player loser;
@@ -63,10 +61,6 @@ public class MainActivity extends AppCompatActivity {
         JsonFactory jsonFactory = new JsonFactory();
         TableLayout table = findViewById(R.id.table);
 
-
-
-
-
         try (InputStream is = getResources().openRawResource(R.raw.input)) {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
@@ -75,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
             for (String line; (line = br.readLine()) != null; ) {
                 total.append(line);
             }
-            Log.v("trial", total.toString());
 
         } catch (Exception e) {
 
@@ -137,90 +130,18 @@ public class MainActivity extends AppCompatActivity {
                     playEliminationMatchOtherTours(4, j);
 
                     playEliminationMatchOtherTours(2, j);
+
                     Log.d("tournamentWinner", "eliminationId: " + " winner " + winner.getId() + " gained experience: " + winner.getGainedExperience() + " total experience: " + winner.getExperience());
-                    TableRow row = new TableRow(MainActivity.this);
 
-                    TextView tournamentIdTv = new TextView(MainActivity.this);
-                    tournamentIdTv.setTextColor(Color.BLACK);
-                    tournamentIdTv.setText(mInputModel.getTournaments().get(j).getId() +"");
-
-                    TextView tournamentTypeTv = new TextView(MainActivity.this);
-                    tournamentTypeTv.setTextColor(Color.BLACK);
-                    tournamentTypeTv.setText(mInputModel.getTournaments().get(j).getType());
-
-
-                    TextView playerTv = new TextView(MainActivity.this);
-                    playerTv.setTextColor(Color.BLACK);
-                    playerTv.setText("" + winner.getId());
-
-                    TextView gainedExperienceTv = new TextView(MainActivity.this);
-                    gainedExperienceTv.setTextColor(Color.BLACK);
-                    gainedExperienceTv.setText(""+ winner.getGainedExperience());
-
-
-
-                    TextView totalExperienceTv = new TextView(MainActivity.this);
-                    totalExperienceTv.setTextColor(Color.BLACK);
-                    totalExperienceTv.setText(""+ winner.getExperience());
-
-                    row.addView(tournamentIdTv);
-                    row.addView(tournamentTypeTv);
-                    row.addView(playerTv);
-                    row.addView(gainedExperienceTv);
-                    row.addView(totalExperienceTv);
-
-                    table.addView(row);
+                    createTableView(mInputModel, j);
                 } else {
                     playLeagueMatch();
 
                     Log.d("tournamentWinner", "leagueId: " + " winner " + winner.getId() + " experience: " + winner.getGainedExperience() + " total experience: " + winner.getExperience());
 
-                    TableRow row = new TableRow(MainActivity.this);
-
-
-                    TextView tournamentIdTv = new TextView(MainActivity.this);
-                    tournamentIdTv.setTextColor(Color.BLACK);
-                    tournamentIdTv.setText(mInputModel.getTournaments().get(j).getId() +"");
-
-                    TextView tournamentTypeTv = new TextView(MainActivity.this);
-                    tournamentTypeTv.setTextColor(Color.BLACK);
-                    tournamentTypeTv.setText(mInputModel.getTournaments().get(j).getType());
-
-
-                    TextView playerTv = new TextView(MainActivity.this);
-                    playerTv.setTextColor(Color.BLACK);
-                    playerTv.setText("" + winner.getId());
-
-
-                    TextView gainedExperienceTv = new TextView(MainActivity.this);
-                    gainedExperienceTv.setTextColor(Color.BLACK);
-                    gainedExperienceTv.setText(""+ winner.getGainedExperience());
-
-
-                    TextView totalExperienceTv = new TextView(MainActivity.this);
-                    totalExperienceTv.setTextColor(Color.BLACK);
-                    totalExperienceTv.setText(""+ winner.getExperience());
-
-                    row.addView(tournamentIdTv);
-                    row.addView(tournamentTypeTv);
-                    row.addView(playerTv);
-                    row.addView(gainedExperienceTv);
-                    row.addView(totalExperienceTv);
-                    table.addView(row);
-
+                    createTableView(mInputModel, j);
                 }
 
-
-
-            }
-
-            HashMap<Player, Integer> finalList = new HashMap<Player, Integer>();
-
-            for (int i = 0; i < playerList.size(); i++) {
-
-                finalList.put(playerList.get(i), playerList.get(i).getGainedExperience());
-
-                Log.v("FİNAL", playerList.get(i).getGainedExperience() + "");
 
 
             }
@@ -232,60 +153,58 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void playEliminationMatchFirstTour(int eleminationId) {
+    private void playEliminationMatchFirstTour(int eliminationId) {
 
         List<Player> tempList = new ArrayList<>(playerList);
 
-        playerPair1.clear();
-        playerPair2.clear();
-        while (playerPair1.size() < 8) {
+        eliminationTeam1.clear();
+        eliminationTeam2.clear();
+        while (eliminationTeam1.size() < 8) {
 
             int a = (int) (Math.random() * (tempList.size()));
             int b = (int) (Math.random() * (tempList.size()));
 
             if (a != b) {
 
-                pA = tempList.get(a);
-                pB = tempList.get(b);
+                playerOfEliminationTeam1 = tempList.get(a);
+                playerOfEliminationTeam2 = tempList.get(b);
 
+                eliminationTeam1.add(playerOfEliminationTeam1);
+                eliminationTeam2.add(playerOfEliminationTeam2);
 
-                playerPair1.add(pA);
-                playerPair2.add(pB);
-
-
-                tempList.remove(pA);
-                tempList.remove(pB);
+                tempList.remove(playerOfEliminationTeam1);
+                tempList.remove(playerOfEliminationTeam2);
 
             }
         }
-        decideEliminationWinner(eleminationId);
+        decideEliminationWinner(eliminationId);
     }
 
     private void playLeagueMatch() {
 
-        int count = 0;
-        while (count < playerList.size()) {
+        int playerOfLeagueTeam1 = 0;
+        while (playerOfLeagueTeam1 < playerList.size()) {
 
-            int count2 = count;
+            int playerOfLeagueTeam2 = playerOfLeagueTeam1;
 
-            while (count2 < 16) {
+            while (playerOfLeagueTeam2 < playerList.size()) {
 
-                if (count != count2) {
+                if (playerOfLeagueTeam1 != playerOfLeagueTeam2) {
 
                     ListModel model = new ListModel();
 
 
-                    model.setFirstPlayer(playerList.get(count));
-                    model.setSecondPlayer(playerList.get(count2));
+                    model.setFirstPlayer(playerList.get(playerOfLeagueTeam1));
+                    model.setSecondPlayer(playerList.get(playerOfLeagueTeam2));
 
                     list.add(model);
-                    Log.d("hashmapim", "playLeagueMatch: " + "count: " + count + "count2: " + count2);
+                    Log.d("hashmapim", "playLeagueMatch: " + "count: " + playerOfLeagueTeam1 + "count2: " + playerOfLeagueTeam2);
 
                 }
-                count2++;
+                playerOfLeagueTeam2++;
 
             }
-            count++;
+            playerOfLeagueTeam1++;
 
         }
 
@@ -300,36 +219,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void updateExperience(int id, int totalExperience, int gainedExperience) {
-
-        for (int i = 0; i < playerList.size(); i++) {
-
-            if (playerList.get(i).getId() == id) {
-
-                playerList.get(i).setExperience(totalExperience);
-                playerList.get(i).setGainedExperience(gainedExperience);
-            }
-        }
-    }
-
     private void playEliminationMatchOtherTours(int playerNumber, int eleminationId) {
 
-        playerPair1.clear();
-        playerPair2.clear();
+        eliminationTeam1.clear();
+        eliminationTeam2.clear();
 
         for (int i = 0; i < playerNumber; i = i + 2) {
 
-            pA = winnerList.get(i);
+            playerOfEliminationTeam1 = winnerList.get(i);
 
-            playerPair1.add(pA);
+            eliminationTeam1.add(playerOfEliminationTeam1);
 
         }
 
         for (int i = 1; i < playerNumber; i = i + 2) {
 
-            pB = winnerList.get(i);
+            playerOfEliminationTeam2 = winnerList.get(i);
 
-            playerPair2.add(pB);
+            eliminationTeam2.add(playerOfEliminationTeam2);
         }
 
         decideEliminationWinner(eleminationId);
@@ -340,74 +247,74 @@ public class MainActivity extends AppCompatActivity {
 
         winnerList.clear();
 
-        for (int i = 0; i < playerPair1.size(); i++) {
+        for (int i = 0; i < eliminationTeam1.size(); i++) {
 
-            totalExperience1 = playerPair1.get(i).getExperience();
-            totalExperience2 = playerPair2.get(i).getExperience();
+            totalExperienceOfPlayerOfTeam1 = eliminationTeam1.get(i).getExperience();
+            totalExperienceOfPlayerOfTeam2 = eliminationTeam2.get(i).getExperience();
 
-            gainedExperience1 = 1;
-            gainedExperience2 = 1;
+            gainedExperienceOfPlayerOfTeam1 = 1;
+            gainedExperienceOfPlayerOfTeam2 = 1;
 
-            if (totalExperience1 > totalExperience2) {
+            if (totalExperienceOfPlayerOfTeam1 > totalExperienceOfPlayerOfTeam2) {
 
-                gainedExperience1 = gainedExperience1 + 3;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 3;
             }
 
-            if (totalExperience2 > totalExperience1) {
+            if (totalExperienceOfPlayerOfTeam2 > totalExperienceOfPlayerOfTeam1) {
 
-                gainedExperience2 = gainedExperience2 + 3;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 3;
             }
 
 
-            if (playerPair1.get(i).getHand().equals("left")) {
+            if (eliminationTeam1.get(i).getHand().equals("left")) {
 
-                gainedExperience1 = gainedExperience1 + 2;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 2;
             }
 
-            if (playerPair2.get(i).getHand().equals("left")) {
+            if (eliminationTeam2.get(i).getHand().equals("left")) {
 
-                gainedExperience2 = gainedExperience2 + 2;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 2;
             }
 
             if (tournamentTypeList.get(eleminationId).equals("clay")) {
 
-                if (playerPair1.get(i).getSkills().getClay() > playerPair2.get(i).getSkills().getClay()) {
+                if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getClay()) {
 
-                    gainedExperience1 = gainedExperience1 + 4;
+                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                 }
 
-                if (playerPair2.get(i).getSkills().getClay() > playerPair1.get(i).getSkills().getClay()) {
+                if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getClay()) {
 
-                    gainedExperience2 = gainedExperience2 + 4;
+                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                 }
             } else if (tournamentTypeList.get(eleminationId).equals("grass")) {
 
-                if (playerPair1.get(i).getSkills().getClay() > playerPair2.get(i).getSkills().getGrass()) {
+                if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getGrass()) {
 
-                    gainedExperience1 = gainedExperience1 + 4;
+                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                 }
 
-                if (playerPair2.get(i).getSkills().getClay() > playerPair1.get(i).getSkills().getGrass()) {
+                if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getGrass()) {
 
-                    gainedExperience2 = gainedExperience2 + 4;
+                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                 }
 
             } else {
 
-                if (playerPair1.get(i).getSkills().getClay() > playerPair2.get(i).getSkills().getHard()) {
+                if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getHard()) {
 
-                    gainedExperience1 = gainedExperience1 + 4;
+                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                 }
 
-                if (playerPair2.get(i).getSkills().getClay() > playerPair1.get(i).getSkills().getHard()) {
+                if (eliminationTeam2.get(i).getSkills().getClay() > eliminationTeam1.get(i).getSkills().getHard()) {
 
-                    gainedExperience2 = gainedExperience2 + 4;
+                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                 }
             }
 
 
-            double pr1 = (double) gainedExperience1 / (gainedExperience1 + gainedExperience2);
-            double pr2 = (double) gainedExperience2 / (gainedExperience1 + gainedExperience2);
+            double pr1 = (double) gainedExperienceOfPlayerOfTeam1 / (gainedExperienceOfPlayerOfTeam1 + gainedExperienceOfPlayerOfTeam2);
+            double pr2 = (double) gainedExperienceOfPlayerOfTeam2 / (gainedExperienceOfPlayerOfTeam1 + gainedExperienceOfPlayerOfTeam2);
 
             double randomNumber = Math.random();
 
@@ -415,41 +322,41 @@ public class MainActivity extends AppCompatActivity {
 
                 if (pr1 > randomNumber) {
 
-                    winner = playerPair1.get(i);
-                    loser = playerPair2.get(i);
+                    winner = eliminationTeam1.get(i);
+                    loser = eliminationTeam2.get(i);
                 } else {
 
-                    winner = playerPair2.get(i);
-                    loser = playerPair1.get(i);
+                    winner = eliminationTeam2.get(i);
+                    loser = eliminationTeam1.get(i);
                 }
             } else {
 
                 if (pr2 > randomNumber) {
 
-                    winner = playerPair2.get(i);
-                    loser = playerPair1.get(i);
+                    winner = eliminationTeam2.get(i);
+                    loser = eliminationTeam1.get(i);
                 } else {
 
-                    winner = playerPair1.get(i);
-                    loser = playerPair2.get(i);
+                    winner = eliminationTeam1.get(i);
+                    loser = eliminationTeam2.get(i);
                 }
             }
 
-            if (winner == playerPair1.get(i)) {
+            if (winner == eliminationTeam1.get(i)) {
 
-                gainedExperience1 = gainedExperience1 + 20;
-                gainedExperience2 = gainedExperience2 + 10;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 20;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 10;
 
-                winner.addGainedExperience(gainedExperience1);
-                loser.addGainedExperience(gainedExperience2);
+                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
+                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
 
-            } else if (winner == playerPair2.get(i)) {
+            } else if (winner == eliminationTeam2.get(i)) {
 
-                gainedExperience1 = gainedExperience1 + 10;
-                gainedExperience2 = gainedExperience2 + 20;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 10;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 20;
 
-                winner.addGainedExperience(gainedExperience2);
-                loser.addGainedExperience(gainedExperience1);
+                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
+                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
             }
 
 
@@ -473,31 +380,31 @@ public class MainActivity extends AppCompatActivity {
             secondList.add(list.get(i).getSecondPlayer());
 
 
-            totalExperience1 = firstList.get(i).getExperience();
-            totalExperience2 = secondList.get(i).getExperience();
+            totalExperienceOfPlayerOfTeam1 = firstList.get(i).getExperience();
+            totalExperienceOfPlayerOfTeam2 = secondList.get(i).getExperience();
 
-            gainedExperience1 = 1;
-            gainedExperience2 = 1;
+            gainedExperienceOfPlayerOfTeam1 = 1;
+            gainedExperienceOfPlayerOfTeam2 = 1;
 
-            if (totalExperience1 > totalExperience2) {
+            if (totalExperienceOfPlayerOfTeam1 > totalExperienceOfPlayerOfTeam2) {
 
-                gainedExperience1 = gainedExperience1 + 3;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 3;
             }
 
-            if (totalExperience2 > totalExperience1) {
+            if (totalExperienceOfPlayerOfTeam2 > totalExperienceOfPlayerOfTeam1) {
 
-                gainedExperience2 = gainedExperience2 + 3;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 3;
             }
 
 
             if (firstList.get(i).getHand().equals("left")) {
 
-                gainedExperience1 = gainedExperience1 + 2;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 2;
             }
 
             if (secondList.get(i).getHand().equals("left")) {
 
-                gainedExperience2 = gainedExperience2 + 2;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 2;
             }
 
 
@@ -505,41 +412,41 @@ public class MainActivity extends AppCompatActivity {
 
                 if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getClay()) {
 
-                    gainedExperience1 = gainedExperience1 + 4;
+                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                 }
 
                 if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getClay()) {
 
-                    gainedExperience2 = gainedExperience2 + 4;
+                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                 }
             } else if (leagueList.get(tournamentId).getSurface().equals("grass")) {
 
                 if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getGrass()) {
 
-                    gainedExperience1 = gainedExperience1 + 4;
+                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                 }
 
                 if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getGrass()) {
 
-                    gainedExperience2 = gainedExperience2 + 4;
+                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                 }
 
             } else {
 
                 if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getHard()) {
 
-                    gainedExperience1 = gainedExperience1 + 4;
+                    gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                 }
 
                 if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getHard()) {
 
-                    gainedExperience2 = gainedExperience2 + 4;
+                    gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                 }
             }
 
 
-            double pr1 = (double) gainedExperience1 / (gainedExperience1 + gainedExperience2);
-            double pr2 = (double) gainedExperience2 / (gainedExperience1 + gainedExperience2);
+            double pr1 = (double) gainedExperienceOfPlayerOfTeam1 / (gainedExperienceOfPlayerOfTeam1 + gainedExperienceOfPlayerOfTeam2);
+            double pr2 = (double) gainedExperienceOfPlayerOfTeam2 / (gainedExperienceOfPlayerOfTeam1 + gainedExperienceOfPlayerOfTeam2);
 
             double randomNumber = Math.random();
 
@@ -569,20 +476,20 @@ public class MainActivity extends AppCompatActivity {
 
             if (winner == firstList.get(i)) {
 
-                gainedExperience1 = gainedExperience1 + 10;
-                gainedExperience2 = gainedExperience2 + 1;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 10;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 1;
 
-                winner.addGainedExperience(gainedExperience1);
-                loser.addGainedExperience(gainedExperience2);
+                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
+                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
 
             } else if (winner == secondList.get(i)) {
 
-                gainedExperience1 = gainedExperience1 + 1;
-                gainedExperience2 = gainedExperience2 + 10;
+                gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 1;
+                gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 10;
 
 
-                winner.addGainedExperience(gainedExperience2);
-                loser.addGainedExperience(gainedExperience1);
+                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
+                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
 
             }
 
@@ -592,6 +499,44 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //list.clear();
+    }
+
+    private void createTableView(InputModel mInputModel, int j) {
+
+        TableLayout tableLayout = findViewById(R.id.table);
+
+        TableRow row = new TableRow(MainActivity.this);
+
+        TextView tournamentIdTv = new TextView(MainActivity.this);
+        tournamentIdTv.setTextColor(Color.BLACK);
+        tournamentIdTv.setText(mInputModel.getTournaments().get(j).getId() +"");
+
+        TextView tournamentTypeTv = new TextView(MainActivity.this);
+        tournamentTypeTv.setTextColor(Color.BLACK);
+        tournamentTypeTv.setText(mInputModel.getTournaments().get(j).getType());
+
+
+        TextView playerTv = new TextView(MainActivity.this);
+        playerTv.setTextColor(Color.BLACK);
+        playerTv.setText("" + winner.getId());
+
+        TextView gainedExperienceTv = new TextView(MainActivity.this);
+        gainedExperienceTv.setTextColor(Color.BLACK);
+        gainedExperienceTv.setText(""+ winner.getGainedExperience());
+
+        TextView totalExperienceTv = new TextView(MainActivity.this);
+        totalExperienceTv.setTextColor(Color.BLACK);
+        totalExperienceTv.setText(""+ winner.getExperience());
+
+        row.addView(tournamentIdTv);
+        row.addView(tournamentTypeTv);
+        row.addView(playerTv);
+        row.addView(gainedExperienceTv);
+        row.addView(totalExperienceTv);
+
+        tableLayout.addView(row);
+
+        tableLayout.requestLayout();
     }
 
 }
