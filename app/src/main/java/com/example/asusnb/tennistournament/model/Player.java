@@ -28,6 +28,8 @@ public class Player {
     private Skills skills;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    @JsonIgnore
+    private Integer gainedExperience = 0;
 
     @JsonProperty("id")
     public Integer getId() {
@@ -102,6 +104,17 @@ public class Player {
     public Player withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
+    }
+
+    public Integer getGainedExperience() {
+
+        return gainedExperience;
+    }
+
+    public void addGainedExperience(Integer experience) {
+
+        this.gainedExperience += experience;
+        this.experience += experience;
     }
 
 }

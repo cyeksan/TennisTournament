@@ -15,7 +15,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "players",
         "tournaments"
 })
-public class ResponseModel {
+public class InputModel {
 
     @JsonProperty("players")
     private List<Player> players = null;
@@ -34,7 +34,7 @@ public class ResponseModel {
         this.players = players;
     }
 
-    public ResponseModel withPlayers(List<Player> players) {
+    public InputModel withPlayers(List<Player> players) {
         this.players = players;
         return this;
     }
@@ -49,7 +49,7 @@ public class ResponseModel {
         this.tournaments = tournaments;
     }
 
-    public ResponseModel withTournaments(List<Tournament> tournaments) {
+    public InputModel withTournaments(List<Tournament> tournaments) {
         this.tournaments = tournaments;
         return this;
     }
@@ -64,7 +64,7 @@ public class ResponseModel {
         this.additionalProperties.put(name, value);
     }
 
-    public ResponseModel withAdditionalProperty(String name, Object value) {
+    public InputModel withAdditionalProperty(String name, Object value) {
         this.additionalProperties.put(name, value);
         return this;
     }
