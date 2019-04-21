@@ -1,5 +1,6 @@
 package com.example.asusnb.tennistournament.view;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -38,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Player playerOfEliminationTeam1;
     private Player playerOfEliminationTeam2;
-    List<ListModel> list = new ArrayList<>();
+    private List<ListModel> list = new ArrayList<>();
 
     private Integer totalExperienceOfPlayerOfTeam1 = null;
     private Integer totalExperienceOfPlayerOfTeam2 = null;
@@ -53,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
     private Player winner;
     private Player loser;
 
+    TableLayout tableLayout;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
 
         ObjectMapper objectMapper = new ObjectMapper();
         JsonFactory jsonFactory = new JsonFactory();
+
+        tableLayout = findViewById(R.id.finalScores);
 
         try (InputStream is = getResources().openRawResource(R.raw.input)) {
 
@@ -142,7 +149,37 @@ public class MainActivity extends AppCompatActivity {
                     createTableView(mInputModel, j);
                 }
 
+            }
 
+            sortByGainedExperience();
+
+            for(int i = 0; i < playerList.size(); i++) {
+
+                TableRow row = new TableRow(MainActivity.this);
+
+                TextView orderIdTv = new TextView(MainActivity.this);
+                orderIdTv.setTextColor(Color.BLACK);
+                orderIdTv.setText(String.valueOf(i+1));
+
+                TextView playerIdTv = new TextView(MainActivity.this);
+                orderIdTv.setTextColor(Color.BLACK);
+                orderIdTv.setText(playerList.get(i).getId().toString());
+
+                TextView gainedExperienceTv = new TextView(MainActivity.this);
+                orderIdTv.setTextColor(Color.BLACK);
+                orderIdTv.setText(playerList.get(i).getGainedExperience().toString());
+
+                TextView totalExperienceTv = new TextView(MainActivity.this);
+                orderIdTv.setTextColor(Color.BLACK);
+                orderIdTv.setText(playerList.get(i).getExperience().toString());
+
+
+                row.addView(orderIdTv);
+                row.addView(playerIdTv);
+                row.addView(gainedExperienceTv);
+                row.addView(totalExperienceTv);
+
+                tableLayout.addView(row);
 
             }
 
@@ -219,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void playEliminationMatchOtherTours(int playerNumber, int eleminationId) {
+    private void playEliminationMatchOtherTours(int playerNumber, int eliminationId) {
 
         eliminationTeam1.clear();
         eliminationTeam2.clear();
@@ -239,11 +276,11 @@ public class MainActivity extends AppCompatActivity {
             eliminationTeam2.add(playerOfEliminationTeam2);
         }
 
-        decideEliminationWinner(eleminationId);
+        decideEliminationWinner(eliminationId);
     }
 
 
-    private void decideEliminationWinner(int eleminationId) {
+    private void decideEliminationWinner(int eliminationId) {
 
         winnerList.clear();
 
@@ -276,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 2;
             }
 
-            switch (tournamentTypeList.get(eleminationId)) {
+            switch (tournamentTypeList.get(eliminationId)) {
                 case "clay":
 
                     if (eliminationTeam1.get(i).getSkills().getClay() > eliminationTeam2.get(i).getSkills().getClay()) {
@@ -501,40 +538,39 @@ public class MainActivity extends AppCompatActivity {
 
             }
 
-          //  updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
-           // updateExperience(loser.getId(), loser.getExperience(), loser.getGainedExperience());
+            //  updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
+            // updateExperience(loser.getId(), loser.getExperience(), loser.getGainedExperience());
 
         }
 
-        //list.clear();
     }
 
+    @SuppressLint("SetTextI18n")
     private void createTableView(InputModel mInputModel, int j) {
 
-        TableLayout tableLayout = findViewById(R.id.table);
+        TableLayout tableLayout = findViewById(R.id.tournamentWinnersTable);
 
         TableRow row = new TableRow(MainActivity.this);
 
         TextView tournamentIdTv = new TextView(MainActivity.this);
         tournamentIdTv.setTextColor(Color.BLACK);
-        tournamentIdTv.setText(mInputModel.getTournaments().get(j).getId() +"");
+        tournamentIdTv.setText(mInputModel.getTournaments().get(j).getId().toString());
 
         TextView tournamentTypeTv = new TextView(MainActivity.this);
         tournamentTypeTv.setTextColor(Color.BLACK);
         tournamentTypeTv.setText(mInputModel.getTournaments().get(j).getType());
 
-
         TextView playerTv = new TextView(MainActivity.this);
         playerTv.setTextColor(Color.BLACK);
-        playerTv.setText("" + winner.getId());
+        playerTv.setText(winner.getId().toString());
 
         TextView gainedExperienceTv = new TextView(MainActivity.this);
         gainedExperienceTv.setTextColor(Color.BLACK);
-        gainedExperienceTv.setText(""+ winner.getGainedExperience());
+        gainedExperienceTv.setText(winner.getGainedExperience().toString());
 
         TextView totalExperienceTv = new TextView(MainActivity.this);
         totalExperienceTv.setTextColor(Color.BLACK);
-        totalExperienceTv.setText(""+ winner.getExperience());
+        totalExperienceTv.setText(winner.getExperience().toString());
 
         row.addView(tournamentIdTv);
         row.addView(tournamentTypeTv);
@@ -545,6 +581,16 @@ public class MainActivity extends AppCompatActivity {
         tableLayout.addView(row);
 
         tableLayout.requestLayout();
+    }
+
+    private void sortByGainedExperience() {
+
+        Collections.sort(playerList, new Comparator<Player>() {
+            @Override
+            public int compare(Player o1, Player o2) {
+                return o2.getGainedExperience() - o1.getGainedExperience();
+            }
+        });
     }
 
 }
