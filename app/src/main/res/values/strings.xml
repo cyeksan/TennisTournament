@@ -6,4 +6,5 @@
     <string name="gained_experience">Gained Experience</string>
     <string name="total_experience">Total Experience</string>
     <string name="order">Order</string>
+    <string name="simulate">SIMULATE</string>
 </resources>

@@ -27,8 +27,6 @@ public class Player {
     @JsonProperty("skills")
     private Skills skills;
     @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-    @JsonIgnore
     private Integer gainedExperience = 0;
 
     @JsonProperty("id")
@@ -41,10 +39,6 @@ public class Player {
         this.id = id;
     }
 
-    public Player withId(Integer id) {
-        this.id = id;
-        return this;
-    }
 
     @JsonProperty("hand")
     public String getHand() {
@@ -54,11 +48,6 @@ public class Player {
     @JsonProperty("hand")
     public void setHand(String hand) {
         this.hand = hand;
-    }
-
-    public Player withHand(String hand) {
-        this.hand = hand;
-        return this;
     }
 
     @JsonProperty("experience")
@@ -71,39 +60,9 @@ public class Player {
         this.experience = experience;
     }
 
-    public Player withExperience(Integer experience) {
-        this.experience = experience;
-        return this;
-    }
-
     @JsonProperty("skills")
     public Skills getSkills() {
         return skills;
-    }
-
-    @JsonProperty("skills")
-    public void setSkills(Skills skills) {
-        this.skills = skills;
-    }
-
-    public Player withSkills(Skills skills) {
-        this.skills = skills;
-        return this;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
-    public Player withAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-        return this;
     }
 
     public Integer getGainedExperience() {
