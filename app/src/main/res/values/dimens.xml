@@ -2,4 +2,6 @@
 <resources>
     <dimen name="row_title_padding">4dp</dimen>
     <dimen name="table_padding">8dp</dimen>
+    <dimen name="racket_image_size">96dp</dimen>
+    <dimen name="racket_image_margin">16dp</dimen>
 </resources>

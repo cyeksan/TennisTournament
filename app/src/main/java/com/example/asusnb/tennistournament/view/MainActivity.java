@@ -293,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
     private void playLeagueMatch() {
 
         int playerOfLeagueTeam1 = 0;
+        listOfMatchOfPlayersInLeague.clear();
         while (playerOfLeagueTeam1 < playerList.size()) {
 
             int playerOfLeagueTeam2 = playerOfLeagueTeam1;
