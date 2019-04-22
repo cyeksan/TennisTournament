@@ -150,8 +150,6 @@ public class MainActivity extends AppCompatActivity {
             //region Get tournament results respectively:
             for (int j = 0; j < mInputModel.getTournaments().size(); j++) {
 
-
-
                 //region If tournament type is elimination, elimination match is played:
                 if (mInputModel.getTournaments().get(j).getType().equalsIgnoreCase("elimination")) {
 
@@ -163,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
                     playEliminationMatchOtherTours(2, j);
 
-                    Log.d("tournamentWinner", "eliminationId: " + " winner " + winner.getId() + " gained experience: " + winner.getGainedExperience() + " total experience: " + winner.getExperience());
+                    Log.d("tournamentWinner", "eliminationId: " + " winner " + + playerList.get(6).getId() + " gained experience: " + playerList.get(6).getGainedExperience() + " total experience: " + playerList.get(6).getExperience());
 
                 }
 
@@ -173,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     playLeagueMatch();
 
-                    Log.d("tournamentWinner", "leagueId: " + " winner " + winner.getId() + " experience: " + winner.getGainedExperience() + " total experience: " + winner.getExperience());
+                    Log.d("tournamentWinner", "leagueId: " + " winner " + playerList.get(6).getId() + " experience: " + playerList.get(6).getGainedExperience() + " total experience: " + playerList.get(6).getExperience());
 
                 }
                 //endregion
@@ -334,16 +332,19 @@ public class MainActivity extends AppCompatActivity {
     private void decideEliminationWinner(int eliminationId) {
 
         winnerList.clear();
+        Player firstPlayer;
+        Player secondPlayer;
 
         for (int i = 0; i < eliminationTeam1.size(); i++) {
 
-            totalExperienceOfPlayerOfTeam1 = eliminationTeam1.get(i).getExperience();
-            totalExperienceOfPlayerOfTeam2 = eliminationTeam2.get(i).getExperience();
+             firstPlayer = eliminationTeam1.get(i);
+             secondPlayer = eliminationTeam2.get(i);
 
-            //region Matching gives gained experience score of 1 to both players:
+            totalExperienceOfPlayerOfTeam1 = firstPlayer.getExperience();
+            totalExperienceOfPlayerOfTeam2 = secondPlayer.getExperience();
+
             gainedExperienceOfPlayerOfTeam1 = 1;
-            gainedExperienceOfPlayerOfTeam2 = 1;
-            //endregion
+            gainedExperienceOfPlayerOfTeam2 =  1;
 
             //region The player which has higher total experience gains experience score of 3:
             if (totalExperienceOfPlayerOfTeam1 > totalExperienceOfPlayerOfTeam2) {
@@ -423,6 +424,9 @@ public class MainActivity extends AppCompatActivity {
 
             double randomNumber = Math.random();
 
+            Player winner;
+            Player loser;
+
             //region If the probability of winning of player from Team 1 is higher than the other, it is more probable to be higher than a random number btw 0 and 1 (and vice versa):
             if (pr1 > pr2) {
 
@@ -456,24 +460,41 @@ public class MainActivity extends AppCompatActivity {
                 gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 20;
                 gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 10;
 
-                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
-                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
+                totalExperienceOfPlayerOfTeam1 = winner.getExperience() + gainedExperienceOfPlayerOfTeam1;
+                totalExperienceOfPlayerOfTeam2 = loser.getExperience() + gainedExperienceOfPlayerOfTeam2;
+
+                winner.setGainedExperience(winner.getGainedExperience() + gainedExperienceOfPlayerOfTeam1);
+                loser.setGainedExperience(loser.getGainedExperience() + gainedExperienceOfPlayerOfTeam2);
+
+                winner.setExperience(totalExperienceOfPlayerOfTeam1);
+                loser.setExperience(totalExperienceOfPlayerOfTeam2);
 
             } else {
 
                 gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 10;
                 gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 20;
 
-                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
-                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
+                totalExperienceOfPlayerOfTeam2 = winner.getExperience() + gainedExperienceOfPlayerOfTeam2;
+                totalExperienceOfPlayerOfTeam1 = loser.getExperience() + gainedExperienceOfPlayerOfTeam1;
+
+                winner.setGainedExperience(winner.getGainedExperience() + gainedExperienceOfPlayerOfTeam2);
+                loser.setGainedExperience(loser.getGainedExperience() + gainedExperienceOfPlayerOfTeam1);
+
+
+                winner.setExperience(totalExperienceOfPlayerOfTeam2);
+                loser.setExperience(totalExperienceOfPlayerOfTeam1);
             }
             //endregion
 
             //region Winner list is updated because the winner of this elimination phase is going to play in the next phase of elimination:
             winnerList.add(winner);
             //endregion
+            updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
+            updateExperience(loser.getId(), loser.getExperience(), loser.getGainedExperience());
 
         }
+
+
     }
 
     /**
@@ -483,16 +504,13 @@ public class MainActivity extends AppCompatActivity {
      **/
     private void decideLeagueWinner(int tournamentId) {
 
-        List<Player> firstList = new ArrayList<>();
-        List<Player> secondList = new ArrayList<>();
-
         for (int i = 0; i < listOfMatchOfPlayersInLeague.size(); i++) {
 
-            firstList.add(listOfMatchOfPlayersInLeague.get(i).getFirstPlayer());
-            secondList.add(listOfMatchOfPlayersInLeague.get(i).getSecondPlayer());
+            Player firstPlayer = listOfMatchOfPlayersInLeague.get(i).getFirstPlayer();
+            Player secondPlayer = listOfMatchOfPlayersInLeague.get(i).getSecondPlayer();
 
-            totalExperienceOfPlayerOfTeam1 = firstList.get(i).getExperience();
-            totalExperienceOfPlayerOfTeam2 = secondList.get(i).getExperience();
+            totalExperienceOfPlayerOfTeam1 = firstPlayer.getExperience();
+            totalExperienceOfPlayerOfTeam2 = secondPlayer.getExperience();
 
             //region Matching gives gained experience score of 1 to both players:
             gainedExperienceOfPlayerOfTeam1 = 1;
@@ -513,12 +531,12 @@ public class MainActivity extends AppCompatActivity {
             //endregion
 
             //region Players who use their left hands gain experience score of 2:
-            if (firstList.get(i).getHand().equals("left")) {
+            if (firstPlayer.getHand().equals("left")) {
 
                 gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 2;
             }
 
-            else if (secondList.get(i).getHand().equals("left")) {
+            else if (secondPlayer.getHand().equals("left")) {
 
                 gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 2;
             }
@@ -528,12 +546,12 @@ public class MainActivity extends AppCompatActivity {
             switch (leagueList.get(tournamentId).getSurface()) {
                 case "clay":
 
-                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getClay()) {
+                    if (firstPlayer.getSkills().getClay() > secondPlayer.getSkills().getClay()) {
 
                         gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                     }
 
-                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getClay()) {
+                    if (secondPlayer.getSkills().getClay() > firstPlayer.getSkills().getClay()) {
 
                         gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                     }
@@ -541,12 +559,12 @@ public class MainActivity extends AppCompatActivity {
 
                 case "grass":
 
-                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getGrass()) {
+                    if (firstPlayer.getSkills().getClay() > secondPlayer.getSkills().getGrass()) {
 
                         gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                     }
 
-                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getGrass()) {
+                    if (secondPlayer.getSkills().getClay() > firstPlayer.getSkills().getGrass()) {
 
                         gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                     }
@@ -555,12 +573,12 @@ public class MainActivity extends AppCompatActivity {
 
                 case "hard":
 
-                    if (firstList.get(i).getSkills().getClay() > secondList.get(i).getSkills().getHard()) {
+                    if (firstPlayer.getSkills().getClay() > secondPlayer.getSkills().getHard()) {
 
                         gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 4;
                     }
 
-                    if (secondList.get(i).getSkills().getClay() > firstList.get(i).getSkills().getHard()) {
+                    if (secondPlayer.getSkills().getClay() > firstPlayer.getSkills().getHard()) {
 
                         gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 4;
                     }
@@ -575,54 +593,72 @@ public class MainActivity extends AppCompatActivity {
             //endregion
 
             double randomNumber = Math.random();
+            Player winner;
+            Player loser;
 
             //region If the probability of winning of player from Team 1 is higher than the other, it is more probable to be higher than a random number btw 0 and 1 (and vice versa):
             if (pr1 > pr2) {
 
                 if (pr1 > randomNumber) {
 
-                    winner = firstList.get(i);
-                    loser = secondList.get(i);
+                    winner = firstPlayer;
+                    loser = secondPlayer;
                 } else {
 
-                    winner = secondList.get(i);
-                    loser = firstList.get(i);
+                    winner = secondPlayer;
+                    loser = firstPlayer;
                 }
             } else {
 
                 if (pr2 > randomNumber) {
 
-                    winner = secondList.get(i);
-                    loser = firstList.get(i);
+                    winner = secondPlayer;
+                    loser = firstPlayer;
                 } else {
 
-                    winner = firstList.get(i);
-                    loser = secondList.get(i);
+                    winner = firstPlayer;
+                    loser = secondPlayer;
                 }
             }
             //endregion
 
             //region Update gained experience scores according to the winning case of players:
-            if (winner == firstList.get(i)) {
+            if (winner == firstPlayer) {
 
                 gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 10;
                 gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 1;
 
-                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
-                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
+                totalExperienceOfPlayerOfTeam1 = winner.getExperience() + gainedExperienceOfPlayerOfTeam1;
+                totalExperienceOfPlayerOfTeam2 = loser.getExperience() + gainedExperienceOfPlayerOfTeam2;
+
+                winner.setGainedExperience(winner.getGainedExperience() + gainedExperienceOfPlayerOfTeam1);
+                loser.setGainedExperience(loser.getGainedExperience() + gainedExperienceOfPlayerOfTeam2);
+
+                winner.setExperience(totalExperienceOfPlayerOfTeam1);
+                loser.setExperience(totalExperienceOfPlayerOfTeam2);
 
             } else {
 
                 gainedExperienceOfPlayerOfTeam1 = gainedExperienceOfPlayerOfTeam1 + 1;
                 gainedExperienceOfPlayerOfTeam2 = gainedExperienceOfPlayerOfTeam2 + 10;
-                
-                winner.addGainedExperience(gainedExperienceOfPlayerOfTeam2);
-                loser.addGainedExperience(gainedExperienceOfPlayerOfTeam1);
+
+                totalExperienceOfPlayerOfTeam2 = winner.getExperience() + gainedExperienceOfPlayerOfTeam2;
+                totalExperienceOfPlayerOfTeam1 = loser.getExperience() + gainedExperienceOfPlayerOfTeam1;
+
+                winner.setGainedExperience(winner.getGainedExperience() + gainedExperienceOfPlayerOfTeam2);
+                loser.setGainedExperience(loser.getGainedExperience() + gainedExperienceOfPlayerOfTeam1);
+
+                winner.setExperience(totalExperienceOfPlayerOfTeam2);
+                loser.setExperience(totalExperienceOfPlayerOfTeam1);
+
 
             }
             //endregion
+            updateExperience(winner.getId(), winner.getExperience(), winner.getGainedExperience());
+            updateExperience(loser.getId(), loser.getExperience(), loser.getGainedExperience());
 
         }
+
 
     }
 
@@ -661,6 +697,17 @@ public class MainActivity extends AppCompatActivity {
         textView.setGravity(Gravity.CENTER);
         textView.setLayoutParams(lp);
         textView.setTextColor(Color.WHITE);
+    }
+    private void updateExperience(int userId , int userExperience, int userGainedExperience){
+
+        for(int i = 0 ; i < playerList.size() ; i++){
+            if(playerList.get(i).getId() == userId ){
+                Player player =  playerList.get(i);
+                player.setExperience(userExperience);
+                player.setGainedExperience(userGainedExperience);
+            }
+        }
+
     }
 
 }
